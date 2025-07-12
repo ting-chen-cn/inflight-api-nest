@@ -4,21 +4,73 @@ import {
   Get,
   Param,
   Query,
+  ValidationPipe,
 } from '@nestjs/common';
 import { PassengerService } from './passenger.service';
+import { GetPassengersByFlightRequestDto } from './dto/get-passengers-by-flight.request.dto';
+import {
+  ApiBadRequestResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+} from '@nestjs/swagger';
+import { GetPassengerSummaryResponseDto } from './dto/get-passenger-summary.response.dto';
+import { GetPassengerByIdResponseDto } from './dto/get-passenger-by-id.response.dto';
+import { BadRequestDto } from '../common/dto/bad-request.dto';
 
 @Controller('passengers')
 export class PassengerController {
   constructor(private readonly passengerService: PassengerService) {}
 
   @Get()
+  @ApiOperation({
+    summary: 'Get passengers by flight number and departure date',
+    description:
+      'Retrieves a list of passengers for a specific flight based on flight number and departure date.',
+    operationId: 'getPassengersByFlight',
+    tags: ['Passenger'],
+  })
+  @ApiQuery({
+    name: 'flightNumber',
+    required: true,
+    description: 'Flight number of the flight to get passengers for.',
+    type: String,
+  })
+  @ApiQuery({
+    name: 'departureDate',
+    required: true,
+    description: 'Departure date of the flight to get passengers for.',
+    type: String,
+    format: 'date',
+  })
+  @ApiOkResponse({
+    description: 'List of passengers for the specified flight.',
+    type: GetPassengerSummaryResponseDto,
+    isArray: true,
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid request parameters.',
+    type: BadRequestDto,
+  })
   async getByFlight(
-    @Query('flightNumber') flightNumber: string,
-    @Query('departureDate') departureDate: string,
+    @Query(
+      new ValidationPipe({
+        transform: true,
+        transformOptions: { enableImplicitConversion: true },
+        exceptionFactory: (errors) => new BadRequestException(errors),
+      }),
+    )
+    query: GetPassengersByFlightRequestDto,
   ) {
+    const { flightNumber, departureDate } = query;
+
     if (!flightNumber || !departureDate) {
-      throw new BadRequestException('Missing flightNumber or departureDate');
+      throw new BadRequestException(
+        'Both flightNumber and departureDate are required.',
+      );
     }
+
     return this.passengerService.getPassengersByFlight(
       flightNumber,
       departureDate,
@@ -26,7 +78,24 @@ export class PassengerController {
   }
 
   @Get(':id')
+  @ApiOperation({
+    summary: 'Get passenger by ID',
+    description:
+      'Retrieves detailed information about a specific passenger by their ID.',
+    operationId: 'getPassengerById',
+    tags: ['Passenger'],
+  })
+  @ApiOkResponse({
+    description: 'Detailed information about the passenger.',
+    type: GetPassengerByIdResponseDto,
+  })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: 'ID of the passenger to retrieve.',
+    type: String,
+  })
   async getById(@Param('id') id: string) {
-    return this.passengerService.getPassengerById(parseInt(id, 10));
+    return this.passengerService.getPassengerById(id);
   }
 }

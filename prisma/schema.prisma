@@ -20,7 +20,7 @@ model Booking {
 }
 
 model Passenger {
-  passengerId Int     @id @default(autoincrement())
+  passengerId String     @id
   firstName   String
   lastName    String
   email       String   @unique

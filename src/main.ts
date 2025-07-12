@@ -10,7 +10,7 @@ async function bootstrap() {
     res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
   });
 
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.enableCors({
     origin: process.env.CORS_ORIGIN || '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
@@ -20,10 +20,12 @@ async function bootstrap() {
     .setTitle('Inflight passenger API')
     .setDescription('API for managing passengers on flights')
     .setVersion('1.0')
-    .addTag('passenger')
+    .addTag('Passenger')
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('docs', app, document, {});
+  SwaggerModule.setup('swagger', app, document, {
+    jsonDocumentUrl: 'swagger/json',
+  });
 
   await app.listen(process.env.PORT ?? 3000);
 }

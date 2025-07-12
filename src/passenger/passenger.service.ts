@@ -1,84 +1,53 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { PassengerSummary } from './entities/passenger-summary';
+import { PassengerRepository } from './passenger.repository';
+import { BookingRepository } from '../booking/booking.repository';
+import { FlightRepository } from '../flight/flight.repository';
+import { BookingFlightRepository } from '../booking-flight/booking-flight.repository';
 
 @Injectable()
 export class PassengerService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private readonly passengerRepo: PassengerRepository,
+    private readonly bookingRepo: BookingRepository,
+    private readonly flightRepo: FlightRepository,
+    private readonly bookingFlightRepository: BookingFlightRepository,
+  ) {}
 
-  async getPassengersByFlight(flightNumber: string, departureDate: string) {
-    const flight = await this.prisma.flight.findUnique({
-      where: {
-        flight_by_number_and_date: {
-          flightNumber,
-          departureDate: new Date(departureDate),
-        },
-      },
-      select: {
-        flightId: true,
-      },
-    });
+  async getPassengersByFlight(
+    flightNumber: string,
+    departureDate: string,
+  ): Promise<PassengerSummary[]> {
+    const date = new Date(departureDate);
+    console.log(date);
+    const flight =
+      await this.flightRepo.findFlightIdByFlightNumberAndDepartureDate(
+        flightNumber,
+        date,
+      );
     if (!flight) {
-      throw new Error('Flight not found');
+      return [];
     }
-    const bookingFlights = await this.prisma.bookingFlight.findMany({
-      where: {
-        flightId: flight.flightId,
-      },
-      select: {
-        bookingId: true,
-      },
-    });
+    const bookingFlights =
+      await this.bookingFlightRepository.findBookingIdsByFlightId(
+        flight.flightId,
+      );
     if (bookingFlights.length === 0) {
       return [];
     }
     const bookingIds = bookingFlights.map((bf) => bf.bookingId);
-    return await this.prisma.passenger.findMany({
-      where: {
-        bookingId: {
-          in: bookingIds,
-        },
-      },
-      select: {
-        passengerId: true,
-        firstName: true,
-        lastName: true,
-        bookingId: true,
-      },
-    });
+    return await this.passengerRepo.getPassengersByBookingIds(bookingIds);
   }
 
-  async getPassengerById(id: number) {
-    const passenger = await this.prisma.passenger.findUnique({
-      where: {
-        passengerId: id,
-      },
-      select: {
-        passengerId: true,
-        firstName: true,
-        lastName: true,
-        email: true,
-        bookingId: true,
-      },
-    });
+  async getPassengerById(id: string) {
+    const passenger = await this.passengerRepo.getPassengerById(id);
     if (!passenger) {
-      throw new Error('Passenger not found');
+      return null;
     }
-    const bookingFlights = await this.prisma.bookingFlight.findMany({
-      where: {
-        bookingId: passenger.bookingId,
-      },
-      select: {
-        flight: {
-          select: {
-            flightNumber: true,
-            departureAirport: true,
-            arrivalAirport: true,
-            departureDate: true,
-            arrivalDate: true,
-          },
-        },
-      },
-    });
+    const bookingFlights =
+      await this.bookingFlightRepository.findBookingFlightsByBookingId(
+        passenger.bookingId,
+      );
 
     return {
       ...passenger,

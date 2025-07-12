@@ -8,8 +8,18 @@ async function main() {
       bookingId: 'AB1234',
       passengers: {
         create: [
-          { firstName: 'Ting', lastName: 'Chen', email: 'ting@example.com' },
-          { firstName: 'Chris', lastName: 'Lee', email: 'chris@example.com' },
+          {
+            passengerId: '1',
+            firstName: 'Ting',
+            lastName: 'Chen',
+            email: 'ting@example.com',
+          },
+          {
+            passengerId: '2',
+            firstName: 'Chris',
+            lastName: 'Lee',
+            email: 'chris@example.com',
+          },
         ],
       },
     },
