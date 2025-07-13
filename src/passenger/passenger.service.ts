@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
+
 import { PassengerSummary } from './entities/passenger-summary';
 import { PassengerRepository } from './passenger.repository';
 import { BookingRepository } from '../booking/booking.repository';
-import { FlightRepository } from '../flight/flight.repository';
 import { BookingFlightRepository } from '../booking-flight/booking-flight.repository';
+import { FlightRepository } from '../flight/flight.repository';
 
 @Injectable()
 export class PassengerService {
@@ -18,12 +19,10 @@ export class PassengerService {
     flightNumber: string,
     departureDate: string,
   ): Promise<PassengerSummary[]> {
-    const date = new Date(departureDate);
-    console.log(date);
     const flight =
       await this.flightRepo.findFlightIdByFlightNumberAndDepartureDate(
         flightNumber,
-        date,
+        new Date(departureDate),
       );
     if (!flight) {
       return [];

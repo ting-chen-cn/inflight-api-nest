@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
+
 import { PassengerController } from './passenger.controller';
-import { PassengerService } from './passenger.service';
 import { PassengerRepository } from './passenger.repository';
+import { PassengerService } from './passenger.service';
 import { BookingModule } from '../booking/booking.module';
-import { FlightModule } from '../flight/flight.module';
 import { BookingFlightModule } from '../booking-flight/booking-flight.module';
+import { FlightModule } from '../flight/flight.module';
 
 @Module({
   imports: [BookingModule, FlightModule, BookingFlightModule],

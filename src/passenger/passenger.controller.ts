@@ -6,19 +6,22 @@ import {
   Query,
   ValidationPipe,
 } from '@nestjs/common';
-import { PassengerService } from './passenger.service';
-import { GetPassengersByFlightRequestDto } from './dto/get-passengers-by-flight.request.dto';
 import {
   ApiBadRequestResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
   ApiQuery,
+  ApiTags,
 } from '@nestjs/swagger';
-import { GetPassengerSummaryResponseDto } from './dto/get-passenger-summary.response.dto';
+
 import { GetPassengerByIdResponseDto } from './dto/get-passenger-by-id.response.dto';
+import { GetPassengerSummaryResponseDto } from './dto/get-passenger-summary.response.dto';
+import { GetPassengersByFlightRequestDto } from './dto/get-passengers-by-flight.request.dto';
+import { PassengerService } from './passenger.service';
 import { BadRequestDto } from '../common/dto/bad-request.dto';
 
+@ApiTags('Passenger')
 @Controller('passengers')
 export class PassengerController {
   constructor(private readonly passengerService: PassengerService) {}

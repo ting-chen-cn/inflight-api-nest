@@ -14,37 +14,36 @@ datasource db {
 }
 
 model Booking {
-  bookingId   String    @id @db.Char(6)
-  passengers  Passenger[]
-  flights     BookingFlight[]
+  bookingId  String          @id @db.Char(6)
+  passengers Passenger[]
+  flights    BookingFlight[]
 }
 
 model Passenger {
-  passengerId String     @id
+  passengerId String  @id
   firstName   String
   lastName    String
-  email       String   @unique
-  booking     Booking  @relation(fields: [bookingId], references: [bookingId])
+  email       String  @unique
+  booking     Booking @relation(fields: [bookingId], references: [bookingId])
   bookingId   String
 }
 
 model Flight {
-  flightId        Int    @id @default(autoincrement())
-  flightNumber    String
+  flightId         Int             @id @default(autoincrement())
+  flightNumber     String
   departureAirport String
   arrivalAirport   String
-  departureDate   DateTime
-  arrivalDate     DateTime
-  bookings        BookingFlight[]
+  departureDate    DateTime
+  arrivalDate      DateTime
+  bookings         BookingFlight[]
 
   @@unique([flightNumber, departureDate], name: "flight_by_number_and_date")
 }
 
 model BookingFlight {
-  id           Int     @id @default(autoincrement())
-  booking      Booking @relation(fields: [bookingId], references: [bookingId])
-  bookingId    String
-  flight       Flight  @relation(fields: [flightId], references: [flightId])
-  flightId     Int
+  id        Int     @id @default(autoincrement())
+  booking   Booking @relation(fields: [bookingId], references: [bookingId])
+  bookingId String
+  flight    Flight  @relation(fields: [flightId], references: [flightId])
+  flightId  Int
 }
-

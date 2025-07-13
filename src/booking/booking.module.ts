@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+
 import { BookingRepository } from './booking.repository';
 
 @Module({

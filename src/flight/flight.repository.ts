@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -11,7 +12,7 @@ export class FlightRepository {
     flightNumber: string,
     departureDate: Date,
   ): Promise<{ flightId: number } | null> {
-    return await this.prismaService.flight.findUnique({
+    return this.prismaService.flight.findUnique({
       where: {
         flight_by_number_and_date: {
           flightNumber,

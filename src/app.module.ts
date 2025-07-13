@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+
 import { PassengerModule } from './passenger/passenger.module';
 import { PrismaModule } from './prisma/prisma.module';
 
