@@ -99,7 +99,7 @@ export class PassengerController {
   })
   async getById(@Param('id', ParseIntPipe) id: number) {
     const passenger = await this.passengerService.getPassengerById(id);
-    if (passenger !== null) {
+    if (passenger === null) {
       throw new NotFoundException('Passenger not found');
     }
     return passenger;
