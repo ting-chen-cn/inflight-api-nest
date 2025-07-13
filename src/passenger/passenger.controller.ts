@@ -1,4 +1,11 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  ParseIntPipe,
+  Query,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiNotFoundResponse,
@@ -79,12 +86,22 @@ export class PassengerController {
     required: true,
     description: 'ID of the passenger to retrieve.',
     type: String,
+    example: '1',
+    format: 'int32',
   })
   @ApiNotFoundResponse({
     description: 'Passenger not found.',
     type: ExceptionDto,
   })
-  async getById(@Param('id') id: string) {
-    return this.passengerService.getPassengerById(id);
+  @ApiBadRequestResponse({
+    description: 'Invalid passenger ID format.',
+    type: ExceptionDto,
+  })
+  async getById(@Param('id', ParseIntPipe) id: number) {
+    const passenger = await this.passengerService.getPassengerById(id);
+    if (passenger !== null) {
+      throw new NotFoundException('Passenger not found');
+    }
+    return passenger;
   }
 }

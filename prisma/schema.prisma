@@ -14,22 +14,22 @@ datasource db {
 }
 
 model Booking {
-  bookingId  String          @id @db.Char(6)
+  id         String          @id @default(dbgenerated("generate_booking_id()")) @db.Char(6)
   passengers Passenger[]
   flights    BookingFlight[]
 }
 
 model Passenger {
-  passengerId String  @id
-  firstName   String
-  lastName    String
-  email       String  @unique
-  booking     Booking @relation(fields: [bookingId], references: [bookingId])
-  bookingId   String
+  id        Int     @id @default(autoincrement())
+  firstName String
+  lastName  String
+  email     String
+  booking   Booking @relation(fields: [bookingId], references: [id])
+  bookingId String
 }
 
 model Flight {
-  flightId         Int             @id @default(autoincrement())
+  id               Int             @id @default(autoincrement())
   flightNumber     String
   departureAirport String
   arrivalAirport   String
@@ -42,8 +42,8 @@ model Flight {
 
 model BookingFlight {
   id        Int     @id @default(autoincrement())
-  booking   Booking @relation(fields: [bookingId], references: [bookingId])
+  booking   Booking @relation(fields: [bookingId], references: [id])
   bookingId String
-  flight    Flight  @relation(fields: [flightId], references: [flightId])
+  flight    Flight  @relation(fields: [flightId], references: [id])
   flightId  Int
 }

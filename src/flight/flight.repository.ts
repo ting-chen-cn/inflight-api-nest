@@ -8,10 +8,10 @@ export class FlightRepository {
     private readonly prismaService: PrismaService, // Assuming PrismaService is imported from the correct path
   ) {}
 
-  async findFlightIdByFlightNumberAndDepartureDate(
+  async findIdByFlightNumberAndDepartureDate(
     flightNumber: string,
     departureDate: Date,
-  ): Promise<{ flightId: number } | null> {
+  ) {
     return this.prismaService.flight.findUnique({
       where: {
         flight_by_number_and_date: {
@@ -20,7 +20,7 @@ export class FlightRepository {
         },
       },
       select: {
-        flightId: true,
+        id: true,
       },
     });
   }

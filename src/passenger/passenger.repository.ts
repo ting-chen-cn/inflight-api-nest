@@ -1,15 +1,12 @@
 import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
-import { PassengerSummary } from './entities/passenger-summary';
 
 @Injectable()
 export class PassengerRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getPassengersByBookingIds(
-    bookingIds: string[],
-  ): Promise<PassengerSummary[]> {
+  async getPassengersByBookingIds(bookingIds: string[]) {
     return this.prismaService.passenger.findMany({
       where: {
         bookingId: {
@@ -17,7 +14,7 @@ export class PassengerRepository {
         },
       },
       select: {
-        passengerId: true,
+        id: true,
         firstName: true,
         lastName: true,
         bookingId: true,
@@ -25,13 +22,13 @@ export class PassengerRepository {
     });
   }
 
-  async getPassengerById(id: string) {
+  async getPassengerById(id: number) {
     return this.prismaService.passenger.findUnique({
       where: {
-        passengerId: id,
+        id: id,
       },
       select: {
-        passengerId: true,
+        id: true,
         firstName: true,
         lastName: true,
         bookingId: true,
