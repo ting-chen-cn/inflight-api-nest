@@ -62,6 +62,7 @@ export class PassengerController {
         transform: true,
         transformOptions: { enableImplicitConversion: true },
         exceptionFactory: (errors) => new BadRequestException(errors),
+        forbidUnknownValues: true,
       }),
     )
     query: GetPassengersByFlightRequestDto,

@@ -1,4 +1,4 @@
-# 🛫 Finnair Pre-Assignment API
+# 🛫 Inflight Passenger API
 
 A RESTful API built with [NestJS](https://nestjs.com/), [Prisma](https://www.prisma.io/), and PostgreSQL.
 This project simulates endpoints for retrieving passengers and flight data, as requested by the inflight crew application team.
