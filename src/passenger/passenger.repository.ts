@@ -35,6 +35,7 @@ export class PassengerRepository {
         firstName: true,
         lastName: true,
         bookingId: true,
+        email: true,
       },
     });
   }

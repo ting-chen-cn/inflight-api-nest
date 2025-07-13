@@ -11,16 +11,13 @@ async function bootstrap() {
     res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
   });
 
-  app.useGlobalPipes(new ValidationPipe({ 
-    whitelist: true, 
-    transform: true, 
-    forbidUnknownValues: true 
-  }));
-  app.enableCors({
-    origin: process.env.CORS_ORIGIN || '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: 'Content-Type, Authorization',
-  });
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      forbidUnknownValues: true,
+    }),
+  );
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Inflight passenger API')

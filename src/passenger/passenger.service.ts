@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { PassengerSummary } from './entities/passenger-summary';
 import { PassengerRepository } from './passenger.repository';
@@ -41,7 +41,7 @@ export class PassengerService {
   async getPassengerById(id: string) {
     const passenger = await this.passengerRepo.getPassengerById(id);
     if (!passenger) {
-      return null;
+      throw new NotFoundException('Passenger not found');
     }
     const bookingFlights =
       await this.bookingFlightRepository.findBookingFlightsByBookingId(

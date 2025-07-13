@@ -1,13 +1,7 @@
-import {
-  BadRequestException,
-  Controller,
-  Get,
-  Param,
-  Query,
-  ValidationPipe,
-} from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
@@ -19,7 +13,7 @@ import { GetPassengerByIdResponseDto } from './dto/get-passenger-by-id.response.
 import { GetPassengerSummaryResponseDto } from './dto/get-passenger-summary.response.dto';
 import { GetPassengersByFlightRequestDto } from './dto/get-passengers-by-flight.request.dto';
 import { PassengerService } from './passenger.service';
-import { BadRequestDto } from '../common/dto/bad-request.dto';
+import { ExceptionDto } from '../common/dto/exception.dto';
 
 @ApiTags('Passenger')
 @Controller('passengers')
@@ -54,26 +48,13 @@ export class PassengerController {
   })
   @ApiBadRequestResponse({
     description: 'Invalid request parameters.',
-    type: BadRequestDto,
+    type: ExceptionDto,
   })
   async getByFlight(
-    @Query(
-      new ValidationPipe({
-        transform: true,
-        transformOptions: { enableImplicitConversion: true },
-        exceptionFactory: (errors) => new BadRequestException(errors),
-        forbidUnknownValues: true,
-      }),
-    )
+    @Query()
     query: GetPassengersByFlightRequestDto,
   ) {
     const { flightNumber, departureDate } = query;
-
-    if (!flightNumber || !departureDate) {
-      throw new BadRequestException(
-        'Both flightNumber and departureDate are required.',
-      );
-    }
 
     return this.passengerService.getPassengersByFlight(
       flightNumber,
@@ -98,6 +79,10 @@ export class PassengerController {
     required: true,
     description: 'ID of the passenger to retrieve.',
     type: String,
+  })
+  @ApiNotFoundResponse({
+    description: 'Passenger not found.',
+    type: ExceptionDto,
   })
   async getById(@Param('id') id: string) {
     return this.passengerService.getPassengerById(id);

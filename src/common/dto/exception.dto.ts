@@ -1,4 +1,4 @@
-export class BadRequestDto {
+export class ExceptionDto {
   statusCode!: number;
   error!: string;
   message!: string[];
