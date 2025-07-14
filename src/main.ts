@@ -1,15 +1,11 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { Request, Response } from 'express';
 
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.use('/health', (req: Request, res: Response) => {
-    res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
-  });
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -24,6 +20,16 @@ async function bootstrap() {
     .setDescription('API for managing passengers on flights')
     .setVersion('1.0')
     .addTag('Passenger')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        name: 'Authorization',
+        description: 'Enter the token in the format: Bearer <token>',
+        in: 'header',
+      },
+      'Access Token',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('swagger', app, document, {

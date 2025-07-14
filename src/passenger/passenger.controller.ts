@@ -8,12 +8,14 @@ import {
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
   ApiQuery,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
 import { GetPassengerByIdResponseDto } from './dto/get-passenger-by-id.response.dto';
@@ -23,6 +25,7 @@ import { PassengerService } from './passenger.service';
 import { ExceptionDto } from '../common/dto/exception.dto';
 
 @ApiTags('Passenger')
+@ApiBearerAuth('Access Token')
 @Controller('passengers')
 export class PassengerController {
   constructor(private readonly passengerService: PassengerService) {}
@@ -55,6 +58,10 @@ export class PassengerController {
   })
   @ApiBadRequestResponse({
     description: 'Invalid request parameters.',
+    type: ExceptionDto,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized access.',
     type: ExceptionDto,
   })
   async getByFlight(
@@ -95,6 +102,10 @@ export class PassengerController {
   })
   @ApiBadRequestResponse({
     description: 'Invalid passenger ID format.',
+    type: ExceptionDto,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized access.',
     type: ExceptionDto,
   })
   async getById(@Param('id', ParseIntPipe) id: number) {
