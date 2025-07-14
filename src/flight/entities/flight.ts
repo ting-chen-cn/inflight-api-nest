@@ -20,3 +20,20 @@ export class Flight {
   @Expose({ name: 'arrivalDate' })
   arrivalDate!: Date;
 }
+
+export class FlightDetailsDto {
+  @Expose({ name: 'flightNumber' })
+  flightNumber!: string;
+
+  @Expose({ name: 'departureAirport' })
+  departureAirport!: string;
+
+  @Expose({ name: 'arrivalAirport' })
+  arrivalAirport!: string;
+
+  @Expose({ name: 'departureDate' })
+  departureDate!: Date;
+
+  @Expose({ name: 'arrivalDate' })
+  arrivalDate!: Date;
+}

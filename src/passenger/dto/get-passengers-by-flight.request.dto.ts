@@ -1,7 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsDateString,
   IsNotEmpty,
+  IsOptional,
   IsString,
   Length,
   MinLength,
@@ -27,4 +28,12 @@ export class GetPassengersByFlightRequestDto {
   })
   @IsNotEmpty()
   departureDate!: string;
+
+  @ApiPropertyOptional({
+    example: 'false',
+    description: 'Only connecting flights',
+  })
+  @IsString()
+  @IsOptional()
+  onlyConnectingFlights?: string = 'false';
 }

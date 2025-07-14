@@ -13,6 +13,19 @@ export class BookingRepository {
       },
       select: {
         id: true,
+        flights: {
+          select: {
+            flight: {
+              select: {
+                flightNumber: true,
+                departureAirport: true,
+                arrivalAirport: true,
+                departureDate: true,
+                arrivalDate: true,
+              },
+            },
+          },
+        },
       },
     });
   }

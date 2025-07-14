@@ -51,6 +51,13 @@ export class PassengerController {
     type: String,
     format: 'date',
   })
+  @ApiQuery({
+    name: 'onlyConnectingFlights',
+    required: false,
+    description: 'Filter for only connecting flights.',
+    type: String,
+    example: 'false',
+  })
   @ApiOkResponse({
     description: 'List of passengers for the specified flight.',
     type: GetPassengerSummaryResponseDto,
@@ -68,11 +75,12 @@ export class PassengerController {
     @Query()
     query: GetPassengersByFlightRequestDto,
   ) {
-    const { flightNumber, departureDate } = query;
+    const { flightNumber, departureDate, onlyConnectingFlights } = query;
 
     return this.passengerService.getPassengersByFlight(
       flightNumber,
       departureDate,
+      onlyConnectingFlights,
     );
   }
 
