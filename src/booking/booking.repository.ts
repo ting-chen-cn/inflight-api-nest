@@ -6,13 +6,16 @@ import { PrismaService } from '../prisma/prisma.service';
 export class BookingRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async findBookingById(id: string) {
-    return this.prismaService.booking.findUnique({
+  async findBookingsByIds(ids: string[]) {
+    return this.prismaService.booking.findMany({
       where: {
-        id: id,
+        id: {
+          in: ids,
+        },
       },
       select: {
         id: true,
+        passengers: true,
         flights: {
           select: {
             flight: {
